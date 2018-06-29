@@ -361,6 +361,7 @@ void tval_print(tval *v);
 
 #define DIGITP(c) ((c) >= '0' && (c) <= '9')
 #define BLANKP(c) ((c) == '\n' || (c) == '\r' || (c) == ' ')
+#define CLOSEP(c) ((c) == ')' || (c) == '}')
 #define EOFP(c) ((c) == '\0')
 
 tval *tet_eval(tstate *s, tframe *f);

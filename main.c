@@ -26,7 +26,7 @@ int main() {
     printf("tenv initialized\n\n");
 
     printf("evaluating\n");
-    tframe *f = tet_read(s, "{1 2 3}");
+    tframe *f = tet_read(s, "((lambda {a b} {+ a b}) 1 2)");
     printf("input: ");
     tval_print(f->vp);
     printf("\noutput:\n");

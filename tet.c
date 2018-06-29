@@ -661,7 +661,11 @@ void tval_print(tval *v) {
             printf("<builtin>");
             break;
         case TVAL_LAMBDA:
-            printf("<lambda>");
+            printf("<lambda ");
+            tval_print(v->pars);
+            printf(" ");
+            tval_print(v->body);
+            printf(">");
             break;
         default:
             break;
@@ -923,7 +927,7 @@ tval *tet_parse_num(tstate *s, char *in, tsize *i) {
 
 tval *tet_parse_sym(tstate *s, char *in, tsize *i) {
     tsize b = *i;
-    while (!EOFP(in[*i]) && !BLANKP(in[*i])) {
+    while (!EOFP(in[*i]) && !BLANKP(in[*i]) && !CLOSEP(in[*i])) {
         (*i)++;
     }
 
@@ -985,7 +989,7 @@ tval *tet_parse_qexpr(tstate *s, char *in, tsize *i) {
     tval *root = tval_qexpr(s, NULL, NULL);
     tval *cur = root;
 
-    while (!EOFP(in[*i]) && in[*i] != ')') {
+    while (!EOFP(in[*i]) && in[*i] != '}') {
         tval *v = tet_parse(s, in, i);
 
         if (cur->car == NULL) {
@@ -996,8 +1000,6 @@ tval *tet_parse_qexpr(tstate *s, char *in, tsize *i) {
             cur->cdr = p;
             cur = p;
         }
-
-        (*i)++;
     }
     (*i)++;
     return root;
@@ -1024,8 +1026,8 @@ tsize builtin_cdr(tframe *f) {
 }
 
 tsize builtin_lambda(tframe *f) {
-    tval *pars = tet_popsexpr(f);
     tval *body = tet_popsexpr(f);
+    tval *pars = tet_popsexpr(f);
     tet_pushlambda(f, pars, body);
     return 1;
 }
